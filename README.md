@@ -1,1 +1,2 @@
-1
+실행
+npm run backend
