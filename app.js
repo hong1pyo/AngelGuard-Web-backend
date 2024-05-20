@@ -1,37 +1,39 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+const createError = require("http-errors");
+const express = require("express");
+const app = express();
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const methodOverride = require("method-override");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-
-var app = express();
-
-// cors
-
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*"); // 모든 출처 허용
-    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE"); // 허용할 HTTP 메서드
-    res.header("Access-Control-Allow-Headers", "Content-Type"); // 허용할 헤더
-    next();
-});
-
-// coRs
+// 라우터
+const testRouter = require("./routes/testRouter");
+const boardRouter = require("./routes/boardRouter");
+const commentRouter = require("./routes/commentRouter");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
+app.use(methodOverride("_method"));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+// CORS 처리 -- 수정필요
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*"); // 모든 출처 허용
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE"); // 허용할 HTTP 메서드
+    res.header("Access-Control-Allow-Headers", "Content-Type"); // 허용할 헤더
+    next();
+});
+// CORS
+
+app.use("/test", testRouter);
+app.use("/board", boardRouter);
+app.use("/comment", commentRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
